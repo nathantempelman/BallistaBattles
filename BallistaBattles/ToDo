@@ -1,0 +1,11 @@
+-add friction to ground, impulses to enemies
+-make a castle door body
+-collision detection
+	-perhaps seperate the enemies into different collision groups so that some of them will hit some others, 
+	giving it a sort of 3d feel. Plus I want to watch bodies get launched.
+-add currency system, for spending on upgrades and fortifications and the like
+-add upgrade system
+-add levels
+
+
+-art assets D:

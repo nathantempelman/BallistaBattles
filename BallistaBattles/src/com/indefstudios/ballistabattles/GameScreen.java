@@ -24,8 +24,12 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -99,7 +103,17 @@ public class GameScreen implements Screen {
 		camera.position.set(camera.viewportWidth * .5f, camera.viewportHeight * .5f, 0f);
         camera.update();  
         
-        //Ground body  
+        createGround();
+        createCollisionListener();
+        
+        debugRenderer = new Box2DDebugRenderer();
+   
+		
+	}
+
+	private void createGround()
+	{
+		//Ground body  
         BodyDef groundBodyDef =new BodyDef();  
         
         //seems to be the center of the body it's setting
@@ -113,41 +127,74 @@ public class GameScreen implements Screen {
         groundFixture.density=0.0f;
         groundFixture.shape = groundshape;
         groundFixture.restitution = .5f;
-        groundFixture.friction=0f;
+        groundFixture.friction=.5f;
         groundFixture.filter.categoryBits = CATAGORY_SCENERY;
         groundFixture.filter.maskBits = MASK_SCENERY;
         groundBody.createFixture(groundFixture);
         groundshape.dispose();
-        
-//        //Dynamic Body  
-//        BodyDef bodyDef = new BodyDef();  
-//        bodyDef.type = BodyType.DynamicBody;  
-//        bodyDef.position.set(50, 5);  
-//        Body body = world.createBody(bodyDef);  
-//        CircleShape dynamicCircle = new CircleShape();  
-//        dynamicCircle.setRadius(1f);  
-//        FixtureDef fixtureDef = new FixtureDef();  
-//        fixtureDef.shape = dynamicCircle;  
-//        fixtureDef.density = 1.0f;  
-//        fixtureDef.friction = 0.0f;  
-//        fixtureDef.restitution = 1;  
-//        body.createFixture(fixtureDef);  
-//        
-//        dynamicCircle.dispose();
-        
-        debugRenderer = new Box2DDebugRenderer();
-   
-		
 	}
-	//Density of rocks, possibly our upgrade system? Gold rocks seems badass.
-//			Shale: 2.75 x 1000 kg/m3 = 2750 kg/m3
-//			Granite: 2.65 x 1000 kg/m3 = 2650 kg/m3
-//			Sandstone: 2.2 x 1000 kg/m3 = 2200 kg/m3
-//			Basalt: 2.65 x 1000 kg/m3 = 2650 kg/m3
-//			Marble: 2.7 x 1000 kg/m3 = 2700 kg/m3
-//			Limestone: 2.45 x 1000 kg/m3 = 2450 kg/m3
-//			Steel: 7.85 x 1000 kg/m3 = 7850 kg/m3
-//			Gold: 14 x 1000 kg/m3 = 14,000 kg/m3
+	private void createCollisionListener() {
+        world.setContactListener(new ContactListener() {
+
+            @Override
+            public void beginContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                Gdx.app.log("beginContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+                
+                Object A = fixtureA.getBody().getUserData();
+                Object B = fixtureB.getBody().getUserData();
+                
+                if(A!= null&&B!=null)
+                {
+                	Gdx.app.log("Collision","Boom, headshot");
+                	((GameObject)A).isDead=true;
+                	((GameObject)B).isDead=true;
+                }
+                
+                
+                
+                
+//                if(fixtureA.getUserData() instanceof Enemy||fixtureA.getUserData() instanceof Boulder)
+//                {
+//                	((Enemy)fixtureA.getUserData()).isDead = true;
+//                }
+//                if(fixtureB.getUserData() instanceof Enemy||fixtureA.getUserData() instanceof Boulder)
+//                {
+//                	((Enemy)fixtureA.getUserData()).isDead = true;
+//                }
+//                if((fixtureA.getUserData() instanceof Enemy&&fixtureB.getUserData() instanceof Boulder)
+//                		|| fixtureB.getUserData() instanceof Enemy && fixtureA.getUserData() instanceof Boulder)
+//                {
+//                	
+//                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Fixture fixtureA = contact.getFixtureA();
+                Fixture fixtureB = contact.getFixtureB();
+                if(fixtureA==null||fixtureB==null)
+                {
+                	Gdx.app.log("endContact", "between some NULLS");
+                	return;
+                }
+                Gdx.app.log("endContact", "between " + fixtureA.toString() + " and " + fixtureB.toString());
+            }
+			@Override
+			public void preSolve(Contact contact, Manifold oldManifold) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+				// TODO Auto-generated method stub
+				
+			}
+
+        });
+    }
 	public void launchBoulder(Vector2 lastTouch)
 	{
 
@@ -211,7 +258,7 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isTouched()) {	
 			if(notTooouchingYou)
 			{
-				notTooouchingYou = false;//I'm touching you now... bitch!?
+				notTooouchingYou = false;//I'm touching you now..
 			}
 			else//it was being touched before
 			{
@@ -221,7 +268,7 @@ public class GameScreen implements Screen {
 		}
 		else
 		{
-			if(!notTooouchingYou)//it was being touched, now it is not. I really shouldn't have let my inner nathan 
+			if(!notTooouchingYou)//it was being touched, now it is not. I really shouldn't have let my inner child 
 			{						// name that variable.
 
 				Vector3 lastTouch = new Vector3(touchX,touchY,0);
@@ -243,7 +290,13 @@ public class GameScreen implements Screen {
 		
 		//suggested is , 8, 3). Higher is better accuracy, lower is better performance
 		world.step(1/60f, 6, 2);
+		sweepBodies();
 		
+		
+		
+	}
+
+	private void sweepBodies() {
 		//Delete bodies that fall off the screen
 		Array<Body> bodylist = new Array<Body>();
 		world.getBodies(bodylist);
@@ -264,7 +317,7 @@ public class GameScreen implements Screen {
 				{
 					if(((GameObject)thing).isDead)
 					{
-						if(((GameObject) thing).framesDead>100)
+						if(((GameObject) thing).framesDead>180)
 						{
 							world.destroyBody(b);
 						}
@@ -274,10 +327,13 @@ public class GameScreen implements Screen {
 						}
 					}
 					
-					if(thing instanceof Enemy)//this is probably bad design, could make enemy and boulder inherit from 
-					{									//something, but for now it doesn't matter. plus this includes static bodies?
+					if(thing instanceof Enemy)
+					{
 						//set linear velocity to some kind of constant here
-						com.badlogic.gdx.physics.box2d.Contact contact;
+						if(!((Enemy)thing).isDead)
+						{
+							b.setLinearVelocity(-5, 0);
+						}
 						
 					}
 					
@@ -285,7 +341,6 @@ public class GameScreen implements Screen {
 			}
 			
 		}
-		
 		
 	}
 
