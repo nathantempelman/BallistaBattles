@@ -1,0 +1,7 @@
+bin/
+gen/
+war/
+*.apk
+/.settings/
+*.class
+.metadata
