@@ -58,8 +58,8 @@ public class GameScreen implements Screen {
     
     //Filter catagories
     //enemy		: 0x0001;  // 0000000000000001
-    //scenery	: 0x0002; // 0000000000000010
-    //boulder	: 0x0004; // 0000000000000100
+    //scenery	: 0x0002;  // 0000000000000010
+    //boulder	: 0x0004;  // 0000000000000100
     
     //Filter masks
     //enemy		: scenery|boulder
@@ -151,16 +151,17 @@ public class GameScreen implements Screen {
                 	((GameObject)A).isDead=true;
                 	((GameObject)B).isDead=true;
                 	
-                	//it seems that new friction doesn't change current collisions. Need a better solution.
-                	//maybe need a seperate collision mask that doesn't include the ground at first, then does after hit
-//                	if(A instanceof Enemy)
-//                	{
-//                		fixtureA.setFriction(.8f);
-//                	}
-//                	if(B instanceof Enemy)
-//                	{
-//                		fixtureB.setFriction(.8f);
-//                	}
+                	//considering having boulders explode into smaller boulders
+                	//or maybe some kind of upgrade system with bomb boulders, etc
+                	// this would be where to make that happen.
+                	if(A instanceof Boulder)
+                	{
+                		
+                	}
+                	if(B instanceof Boulder)
+                	{
+                		
+                	}
                 }
                 
                 
