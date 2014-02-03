@@ -39,7 +39,7 @@ public class Boulder extends GameObject {
         fixtureDef.shape = dynamicCircle;  
         fixtureDef.density = 2000.0f;  
         fixtureDef.friction = 1f;  
-        fixtureDef.restitution = .1f;
+        fixtureDef.restitution = .05f;
         fixtureDef.filter.categoryBits = CATAGORY_BOULDER;
         fixtureDef.filter.maskBits = MASK_BOULDER;
         body.createFixture(fixtureDef);

@@ -127,7 +127,7 @@ public class GameScreen implements Screen {
         groundFixture.density=0.0f;
         groundFixture.shape = groundshape;
         groundFixture.restitution = .5f;
-        groundFixture.friction=.5f;
+        groundFixture.friction=.8f;
         groundFixture.filter.categoryBits = CATAGORY_SCENERY;
         groundFixture.filter.maskBits = MASK_SCENERY;
         groundBody.createFixture(groundFixture);
@@ -145,11 +145,22 @@ public class GameScreen implements Screen {
                 Object A = fixtureA.getBody().getUserData();
                 Object B = fixtureB.getBody().getUserData();
                 
-                if(A!= null&&B!=null)
+                if(A instanceof GameObject && B instanceof GameObject)
                 {
                 	Gdx.app.log("Collision","Boom, headshot");
                 	((GameObject)A).isDead=true;
                 	((GameObject)B).isDead=true;
+                	
+                	//it seems that new friction doesn't change current collisions. Need a better solution.
+                	//maybe need a seperate collision mask that doesn't include the ground at first, then does after hit
+//                	if(A instanceof Enemy)
+//                	{
+//                		fixtureA.setFriction(.8f);
+//                	}
+//                	if(B instanceof Enemy)
+//                	{
+//                		fixtureB.setFriction(.8f);
+//                	}
                 }
                 
                 
@@ -332,7 +343,7 @@ public class GameScreen implements Screen {
 						//set linear velocity to some kind of constant here
 						if(!((Enemy)thing).isDead)
 						{
-							b.setLinearVelocity(-5, 0);
+							b.setLinearVelocity(-5, .15f);
 						}
 						
 					}
@@ -345,21 +356,7 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnEnemy() {
-//		BodyDef bodyDef = new BodyDef();  
-//        bodyDef.type = BodyType.DynamicBody;  
-//        bodyDef.position.set(camera.viewportWidth, 5);  
-//        Body body = world.createBody(bodyDef);
-//       
-//        PolygonShape enemyBox = new PolygonShape();
-//        enemyBox.setAsBox(.5f, 1f);
-//        FixtureDef fixtureDef = new FixtureDef();  
-//        fixtureDef.shape = enemyBox;  
-//        fixtureDef.density = 1.0f;  
-//        fixtureDef.friction = .3f;  
-//        fixtureDef.restitution = .5f;  
-//        body.createFixture(fixtureDef);  
-//        enemyBox.dispose();
-//        body.setLinearVelocity(new Vector2(-5,0));
+
 		Enemy e = new Enemy(world);
 		
 	}

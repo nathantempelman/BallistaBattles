@@ -21,7 +21,7 @@ public class Enemy extends GameObject{
 	{
 		BodyDef bodyDef = new BodyDef();  
         bodyDef.type = BodyType.DynamicBody;  
-        bodyDef.position.set(30, 5);  
+        bodyDef.position.set(30, 3.2f);  
         
         Body body = world.createBody(bodyDef);
        
@@ -30,7 +30,7 @@ public class Enemy extends GameObject{
         FixtureDef fixtureDef = new FixtureDef();  
         fixtureDef.shape = enemyBox;  
         fixtureDef.density = 900.0f;  
-        fixtureDef.friction = .3f;  
+        fixtureDef.friction = .5f;  
         fixtureDef.restitution = .5f;
         fixtureDef.filter.categoryBits = CATAGORY_ENEMY;
         fixtureDef.filter.maskBits = MASK_ENEMY;
